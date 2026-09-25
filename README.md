@@ -19,12 +19,10 @@ cp .env.example .env      # puis remplis les valeurs
 
 | Variable | Rôle |
 |---|---|
-| `CDP_BASE_URL` | URL du site, ex. `https://cahier-de-prepa.fr/ecg1-clemenceau` |
+| `CDP_BASE_URL` | URL du site, ex. `https://cahier-de-prepa.fr/your-class` |
 | `CDP_LOGIN` / `CDP_PASSWORD` | Ton compte élève |
 | `CDP_API_KEY` | Clé exigée par le serveur HTTP (en-tête `X-API-Key`) |
 | `CDP_DOWNLOAD_DIR` | Dossier de la synchro via le serveur (défaut `downloads`) |
-
-`.env`, `downloads/` et `.sync_state.json` sont dans `.gitignore`. Ne commite jamais `.env`.
 
 ## Ligne de commande
 
@@ -60,14 +58,6 @@ Options : `--dest` (défaut `downloads`), `--state` (défaut `.sync_state.json`)
 - La première exécution télécharge tout. Pour ne récupérer que les futurs documents, lance `--baseline` d'abord.
 - La commande renvoie la liste JSON des fichiers nouveaux (`[]` s'il n'y en a pas).
 
-Exemple cron (toutes les 30 min) :
-
-```
-*/30 * * * * cd "/chemin/du/projet" && .venv/bin/python -m cahier_prepa sync >> sync.log 2>&1
-```
-
-Ne descends pas sous ~20 minutes : chaque passage parcourt tous les dossiers
-(une trentaine de requêtes).
 
 ## Serveur HTTP
 
@@ -111,11 +101,3 @@ c.docs("maths")              # -> Dossier(chemin, repertoires, documents, recent
 c.agenda("2610")             # -> [Evenement(date, titre, type, evt_id)]
 c.download(3836, "downloads")
 ```
-
-## Sécurité
-
-- Le serveur écoute sur `127.0.0.1`. Pour l'exposer, mets-le derrière HTTPS,
-  sinon la clé API et tes documents circulent en clair.
-- Les documents des profs sont réservés à ta classe : ne les republie pas
-  (voir la charte affichée sur le site).
-- Change ton mot de passe si tu l'as partagé, puis mets-le à jour dans `.env`.
